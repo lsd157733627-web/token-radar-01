@@ -249,6 +249,20 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
   }
 
+  // Reset filters: one click back to the full pre-token board. Clears the search box,
+  // restores the category and chain filters to All, and switches back to the Pre-token
+  // tab, so a reader who drilled into a slice can get the whole board back without
+  // clearing each control by hand. The hash is rewritten too, so the URL matches.
+  function resetFilters() {
+    state.q = '';
+    state.category = 'all';
+    state.chain = 'all';
+    state.tab = 'pre-token';
+    state.selected = null;
+    writeHash();
+    render();
+  }
+
   // Category summary: the filtered board grouped by category, so the reader sees where the
   // implied value sits instead of only which single protocol leads. Sums use the effective
   // implied values, so the sandbox re-scores this panel too. Rows are sorted by summed
@@ -346,12 +360,14 @@
     var pre = el('button', { type: 'button', 'aria-pressed': state.tab === 'pre-token' ? 'true' : 'false', text: 'Pre-token', onclick: function () { state.tab = 'pre-token'; render(); } });
     var live = el('button', { type: 'button', 'aria-pressed': state.tab === 'live' ? 'true' : 'false', text: 'Live token', onclick: function () { state.tab = 'live'; render(); } });
     var csv = el('button', { class: 'button', type: 'button', text: 'Download board as CSV', onclick: downloadCsv });
+    var reset = el('button', { class: 'button', type: 'button', text: 'Reset filters', onclick: resetFilters });
     return el('div', { class: 'controls' },
       el('div', { class: 'field' }, el('label', { for: 'q', text: 'Search' }), search),
       el('div', { class: 'field' }, el('label', { for: 'category', text: 'Category' }), catSelect),
       el('div', { class: 'field' }, el('label', { for: 'chain', text: 'Chain' }), chainSelect),
       el('div', { class: 'field' }, el('span', { class: 'sub', text: 'Token status' }), el('div', { class: 'tabs' }, pre, live)),
       state.tab === 'pre-token' ? el('div', { class: 'field' }, el('span', { class: 'sub', text: 'Export' }), csv) : null,
+      el('div', { class: 'field' }, el('span', { class: 'sub', text: 'Filters' }), reset),
       el('span', { class: 'count', text: state.tab === 'pre-token' ? viewRows().length + ' rows shown' : DATA.live.length + ' live-token protocols' })
     );
   }
