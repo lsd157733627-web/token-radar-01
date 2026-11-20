@@ -1,3 +1,4 @@
+// Token Radar model (radar-2): category-calibrated implied values and farm plans for pre-token protocols.
 // Token Radar's model, radar-2: one snapshot of the protocol universe in, one ranked board out.
 //
 // The board covers every slug in the snapshot's watchlist (the floor, never a ceiling) and every
